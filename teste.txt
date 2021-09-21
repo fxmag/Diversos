@@ -1,0 +1,8 @@
+johnnygbf@gmail.com
+123456@#$321
+
+Testando a codificação para o padrão brasileiro
+
+É possível notar que sem essa codificação nós temos problemas com as letras que possuem acento ou caractere especial, então é necessário utilizar essa codificação caso queira ver as informações da forma correta!
+
+Outro ponto diferente que temos nesse bloco em relação aos outros é a utilização do arquivo.read() para arquivo.readlines().
