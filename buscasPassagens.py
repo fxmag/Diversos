@@ -18,7 +18,7 @@ for x in dataIda:
     tempo = soup.find('span',{'class':'js-subLabel js-duration _ibU _ibV _idj _kLa _kLb _kLc _kLe _kKW'}).text.strip()
     empresa = soup.find('span',{'class':'codeshares-airline-names'}).text.strip()
     
-    print(f'DIA: {x}/{mesIda}')
+    print(f'DIA: {x}/{mesIda}/{anoIda}')
     print('>>> MELHOR OPÇÃO <<<')
     print(f'Preço: {preco}')
     print(f'Duração: {tempo}')
