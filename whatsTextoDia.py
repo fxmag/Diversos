@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import pyperclip as pc
 
-contatos = 'arquivos'
+contatos = 'Johnny Vivo'
 
 # TEXTO DO DIA
 url = 'https://wol.jw.org/pt/wol/h/r5/lp-t'
