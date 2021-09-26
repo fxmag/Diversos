@@ -6,6 +6,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import pyperclip as pc
 
+contatos = 'arquivos'
+
 # TEXTO DO DIA
 url = 'https://wol.jw.org/pt/wol/h/r5/lp-t'
 
@@ -35,7 +37,8 @@ sleep(35)
 pc.copy(textocompl)
 #py.click(80,274)
 py.click(365,293)
-py.typewrite('arquivos\n',interval=0.3) 
+py.typewrite(contatos,interval=0.3)
+py.press('enter') 
 sleep(3) 
 py.typewrite('>>> *_TEXTO DO DIA_* <<<\n', interval=0.3)
 sleep(2)
