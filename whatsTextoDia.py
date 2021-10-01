@@ -13,8 +13,8 @@ url = 'https://wol.jw.org/pt/wol/h/r5/lp-t'
 
 option = Options()
 option.headless = True
-#driver = webdriver.Chrome(options=option)   # NAVEGADOR OFF
-driver = webdriver.Chrome()                  # NAVEGADOR ON
+driver = webdriver.Chrome(options=option)   # NAVEGADOR OFF
+#driver = webdriver.Chrome()                  # NAVEGADOR ON
 driver.get(url)
 
 textocompl = driver.find_element_by_xpath('//*[@id="dailyText"]/div[2]').text[0:300] 

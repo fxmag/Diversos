@@ -18,6 +18,7 @@ cotacao = soupdolar.find('span',{'class':'DFlfde SwHCTb'}).text
 #print(cotacao)
 #print('Dados Obtidos')
 
+
 z = cotacao.replace(',','.')
 cotacao = float(z)
 print(f'Cotação de HOJE do Dólar: {cotacao}')
