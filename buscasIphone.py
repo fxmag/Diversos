@@ -18,7 +18,6 @@ cotacao = soupdolar.find('span',{'class':'DFlfde SwHCTb'}).text
 #print(cotacao)
 #print('Dados Obtidos')
 
-
 z = cotacao.replace(',','.')
 cotacao = float(z)
 print(f'Cotação de HOJE do Dólar: {cotacao}')
@@ -30,14 +29,15 @@ url = 'https://www.apple.com/shop/refurbished/iphone'
 
 option = Options()
 option.headless = True
-#driver = webdriver.Chrome(options=option)   # NAVEGADOR OFF
-driverc = webdriver.Chrome()                  # NAVEGADOR ON
+driverc = webdriver.Chrome(options=option)   # NAVEGADOR OFF
+#driverc = webdriver.Chrome()                  # NAVEGADOR ON
 driverc.get(url)
 html = driverc.page_source
 soup = BeautifulSoup(html, 'html.parser')
 
 matriz = soup.find_all('ul',{'class':'as-gridpage-producttiles as-producttiles pinwheel'})
 
+lista = []
 for item in soup.find_all('li',{'class':'as-producttile as-util-relatedlink'}):
     phone = item.find('a',{'class':'as-producttile-tilelink'}).text
     preco = item.find('div',{'class':'as-price-currentprice as-producttile-currentprice'}).text
@@ -53,9 +53,22 @@ for item in soup.find_all('li',{'class':'as-producttile as-util-relatedlink'}):
     conversaoMain = (round(preco * cotacao))
     conversaoEcon = (round(economia * cotacao))
     
-    print(phone)
-    print(f'Dólar: ${preco}(R$ {conversaoMain})')
-    print(F'Economia: ${economia} (R$ {conversaoEcon})')
-    print('-'*30)
+    #print(phone)
+    #print(f'Dólar: ${preco}(R$ {conversaoMain})')
+    #print(F'Economia: ${economia} (R$ {conversaoEcon})')
+    #print('-'*30)
+
+    resumo = {
+        'Aparelho':phone,
+        'Dólar':preco,
+        'Real':conversaoMain,
+        'Economia':economia,
+        'Real Economia':conversaoEcon
+    }
+    lista.append(resumo)
+    #print('Salvando: ',resumo['Aparelho'])
+df = pd.DataFrame(lista)
+
+print(df)
 
 driverc.close()
