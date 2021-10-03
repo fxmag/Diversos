@@ -13,11 +13,12 @@ url = 'https://wol.jw.org/pt/wol/h/r5/lp-t'
 
 option = Options()
 option.headless = True
-driver = webdriver.Chrome(options=option)   # NAVEGADOR OFF
-#driver = webdriver.Chrome()                  # NAVEGADOR ON
+#driver = webdriver.Chrome(options=option)   # NAVEGADOR OFF
+driver = webdriver.Chrome(r'C:\Program Files\chromedriver\chromedriver.exe')                  # NAVEGADOR ON
 driver.get(url)
 
 textocompl = driver.find_element_by_xpath('//*[@id="dailyText"]/div[2]').text[0:300] 
+#textocompl = driver.find_element_by_xpath('//*[@id="dailyText"]/div[2]').text[0:300]
 driver.quit()
 
 
@@ -44,6 +45,7 @@ py.typewrite('>>> *_TEXTO DO DIA_* <<<\n', interval=0.3)
 sleep(2)
 py.hotkey('ctrl','v')
 sleep(2)
+py.typewrite(' (...)', interval=0.3)
 py.press('enter')
 sleep(2)
 py.typewrite('_Para continuar, clique abaixo e leia diretamente no site_ https://wol.jw.org/pt/wol/h/r5/lp-t\n', interval=0.3)
