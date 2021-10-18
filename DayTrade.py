@@ -42,3 +42,33 @@ venda = base[['Open','G/P %']]
 venda[['Gatilho']] = base[['Open']] * mediaGanho + base[['Open']]
 venda = round(venda,2)
 venda.tail(5)
+
+
+#######################
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import pandas as pd
+pd.options.mode.chained_assignment = None
+
+dia = yf.Ticker('vale3.SA')
+base = dia.history(period='1d', interval='5m')
+#base.tail()
+
+
+base = base[['Open','High','Low','Close']]
+candles = base.tail()
+
+candles['h1'] = abs(candles['Close'] - candles['High'])*100
+candles['h2'] = abs(candles['Open'] - candles['Close'])*100
+candles['h3'] = abs(candles['Open'] - candles['Low'])*100
+candles
+
+
+for i in range(0,len(candles)):
+    if candles['h2'].iloc[i] < candles['h1'].iloc[i] and candles['h2'].iloc[i] < candles['h3'].iloc[i]:
+        candles['Sinal'].iloc[i] = 'Comprar'
+    else:
+        candles['Sinal'].iloc[i] = ''
+
+candles
