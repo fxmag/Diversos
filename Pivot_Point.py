@@ -5,7 +5,7 @@ import pandas as pd
 from pandas_datareader import data as pdr
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline
+#%matplotlib inline
 
 ticker = input("Qual o ativo que deseja monitorar? ").upper()
 #LETRAS MAIUSCULAS NO ATIVO
