@@ -54,7 +54,9 @@ if not symbol_info.visible:
 
 #preparando a ordem compra request  e ordem de venda
 
-lot = 100.0
+#lot = 100.0
+#lot = input('Quantos lotes? Exemplo: 1.0 ')
+lot = 1.0
 point = mt5.symbol_info(symbol).point
 price = mt5.symbol_info_tick(symbol).ask
 desviation = 1
@@ -72,7 +74,7 @@ request = {
     
     }
 #preparando a ordem de venda 
-lot = 100.0
+lot = 1.0
 point = mt5.symbol_info(symbol).point
 price=mt5.symbol_info_tick(symbol).bid
 desviation = 1
