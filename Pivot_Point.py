@@ -12,7 +12,8 @@ ticker = input("Qual o ativo que deseja monitorar? ").upper()
 
 
 # estabelecemos a conexão ao MetaTrader 5; conecte-se ao MetaTrader 5
-if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
+#if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
+if not mt5.initialize(login=1002947504, server="ClearInvestimentos-CLEAR", password="Joh0516"):
     print("initialize() Falha ao Iniciar seu metra Trade 5")
     mt5.shutdown()
 
