@@ -198,7 +198,7 @@ def win():
     if info_posicoes:
         #print(info_posicoes)
         df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
-        display(df)
+        print(df)
         ticket = df['ticket'].iloc[0]
         natureza = df['type'].iloc[0]
 
@@ -226,7 +226,7 @@ def win():
                 time.sleep(1)
                 print('Fechando VENDA')
                 close_venda()
-                time.sleep(3)
+                time.sleep(1)
                 if resumo['close'].iloc[-2] > resumo['close'].iloc[-3] > resumo['close'].iloc[-4]:
                     print('Abrindo uma COMPRA')
                     compra()
@@ -245,9 +245,6 @@ def win():
                 print('PAUSA - MERCADO LATERAL')
      
     
-    
-    
-    
     else:
         if info_posicoes:
             if df['type'].iloc[0] == 0: #COMPRA
@@ -262,8 +259,14 @@ def win():
                     time.sleep(3)
             else:
                 if resumo['close'].iloc[-2] < resumo['close'].iloc[-3] < resumo['close'].iloc[-4]:
-                    venda()
-                    print('VENDA ABERTA - LTB')
+                    print('VENDA EM ANDAMENTO')
+                else:
+                    close_venda()
+                    print('VENDA FECHADA - MERCADO LATERAL')
+        else:
+            if resumo['close'].iloc[-2] < resumo['close'].iloc[-3] < resumo['close'].iloc[-4]:
+                venda()
+                print('VENDA ABERTA - LTB')
             else:
                 print('PAUSA - MERCADO LATERAL')
 
@@ -333,7 +336,7 @@ def win():
             bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
             bot.sendMessage(-351556985, f'ATENÇÃO! PREJUÍZO OBTIDO EM {item}: R$ {profitPER}')
 
-    display(resumo.tail(5))
+    print(resumo.tail(5))
     time.sleep(2)
 
     print('')
