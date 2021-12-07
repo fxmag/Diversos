@@ -235,18 +235,18 @@ def eur():
                 print('Fechando VENDA')
                 close_venda()
                 time.sleep(1)
-                if resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]:
+                if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
                     print('Abrindo uma COMPRA')
                     compra()
                     time.sleep(3)
             else:
-                if resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]:
+                if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
                     print('COMPRA EM ANDAMENTO')
                 else:
                     close_compra()
                     print('COMPRA FECHADA - MERCADO LATERAL')
         else:
-            if resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]:
+            if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
                 compra()
                 print('COMPRA ABERTA - LTA')
             else:
@@ -261,18 +261,18 @@ def eur():
                 print('Fechando COMPRA')
                 close_compra()
                 time.sleep(1)
-                if resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]:
+                if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
                     print('Abrindo uma VENDA')
                     venda()
                     time.sleep(3)
             else:
-                if resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]:
+                if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
                     print('VENDA EM ANDAMENTO')
                 else:
                     close_venda()
                     print('VENDA FECHADA - MERCADO LATERAL')
         else:
-            if resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]:
+            if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
                 venda()
                 print('VENDA ABERTA - LTB')
             else:
