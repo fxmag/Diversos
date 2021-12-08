@@ -10,7 +10,7 @@ import time
 import telepot
 import pytz
 
-def eur():
+def WIN():
    agora = datetime.now()
    print(f'Buscando dados...{agora}')
    # importamos o módulo pandas para exibir os dados recebidos na forma de uma tabela
@@ -20,15 +20,15 @@ def eur():
    pd.options.mode.chained_assignment = None  # default='warn'
    
    
-   #if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
-   if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
+   if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
+   #if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
        print("initialize() failed, error code =",mt5.last_error())
        quit()
    
    # CRIAÇÃO DAS ORDENS ABERTURA E FECHAMENTO
    
    # DOLAR ()
-   symbol = "EURUSD"
+   symbol = "WINZ21"
    item = symbol
    ativo = symbol
    
@@ -78,7 +78,7 @@ def eur():
        resultVENDA
    
    def close_compra():
-       info_posicoes = mt5.positions_get(symbol = "EURUSD")
+       info_posicoes = mt5.positions_get(symbol = "WINZ21")
        if info_posicoes:
            #print(info_posicoes)
            df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -112,7 +112,7 @@ def eur():
        result
    
    def close_venda():
-       info_posicoes = mt5.positions_get(symbol = "EURUSD")
+       info_posicoes = mt5.positions_get(symbol = "WINZ21")
        if info_posicoes:
            #print(info_posicoes)
            df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -193,7 +193,7 @@ def eur():
    
    
    # RELATÓRIO DAS POSIÇÕES
-   info_posicoes = mt5.positions_get(symbol = "EURUSD")
+   info_posicoes = mt5.positions_get(symbol = "WINZ21")
    if info_posicoes:
        #print(info_posicoes)
        df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -336,5 +336,5 @@ def eur():
    print('\n\n')
 
 while True:
-   eur()
+   WIN()
    time.sleep(60)
