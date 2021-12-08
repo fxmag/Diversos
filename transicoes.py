@@ -238,6 +238,12 @@ def WIN():
               compra()
               time.sleep(3)
               print('COMPRA ABERTA')
+              
+      else:
+         close_venda()
+         print('VENDA FECHADA')
+         
+         
       
    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['sinal'].iloc[-1] == 'sinal'):
       if resumo['flag'].iloc[-1] == 'VENDA':
@@ -257,8 +263,13 @@ def WIN():
             venda()
             time.sleep(3)
             print('VENDA ABERTA')
+   
+      else:
+         close_compra()
+         print('COMPRA FECHADA')
+   
    else:
-      print('AGUARDANDO SINAL PARA ENTRAR NO MERCADO')  
+      print('AGUARDANDO O PRÓXIMO SINAL')  
    
    time.sleep(1)
    
@@ -306,7 +317,7 @@ def WIN():
                time.sleep(5)
                #compra()
    
-           print(f'LUCRO OBTIDO E EFETIVADO DE: ${profitLUC}')
+           #print(f'LUCRO OBTIDO E EFETIVADO DE: ${profitLUC}')
            # ENVIO DE MSG COM O LUCRO OBTIDO:
            #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
            #bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO OBTIDO EM {item}: R$ {profitLUC}')
@@ -322,7 +333,7 @@ def WIN():
                time.sleep(5)
                #compra()
    
-           print(f'PREJUÍZO FECHADO DE: ${profitPER}')
+           #print(f'PREJUÍZO FECHADO DE: ${profitPER}')
            # ENVIO DE MSG COM O PREJUÍZO OBTIDO:
            #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
            #bot.sendMessage(-351556985, f'ATENÇÃO! PREJUÍZO OBTIDO EM {item}: R$ {profitPER}')
@@ -337,4 +348,4 @@ def WIN():
 
 while True:
    WIN()
-   time.sleep(60)
+   time.sleep(300)
