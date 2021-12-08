@@ -1,8 +1,8 @@
 # Copyright 2021, MetaQuotes Ltd.
 # https://www.mql5.com
 
-# RESERVA (1 ATIVO)
-# COM MACD e SETUP 9.1
+# RESERVA COM CONFIRMAÇÃO e SCALPING AUTOMATICO
+# COM MACD e SETUP 30.3
 
 from datetime import datetime
 import MetaTrader5 as mt5
@@ -10,7 +10,8 @@ import time
 import telepot
 import pytz
 
-def eur():
+
+def wdo():
     agora = datetime.now()
     print(f'Buscando dados...{agora}')
     # importamos o módulo pandas para exibir os dados recebidos na forma de uma tabela
@@ -20,19 +21,19 @@ def eur():
     pd.options.mode.chained_assignment = None  # default='warn'
 
 
-    if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
+    if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
+    #if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
         print("initialize() failed, error code =",mt5.last_error())
         quit()
 
     # CRIAÇÃO DAS ORDENS ABERTURA E FECHAMENTO
 
-    # linhas (81;115;205)
-    symbol = "EURUSD"
+    # DOLAR ()
+    symbol = "WDOF22"
     item = symbol
     ativo = symbol
 
     print(symbol)
-
 
     def compra():
         symbol = ativo
@@ -78,7 +79,7 @@ def eur():
         resultVENDA
 
     def close_compra():
-        info_posicoes = mt5.positions_get(symbol = "EURUSD")
+        info_posicoes = mt5.positions_get(symbol = "WDOF22")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -112,7 +113,7 @@ def eur():
         result
 
     def close_venda():
-        info_posicoes = mt5.positions_get(symbol = "EURUSD")
+        info_posicoes = mt5.positions_get(symbol = "WDOF22")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -146,26 +147,19 @@ def eur():
         result
 
     # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
-    # definimos o fuso horário como UTC
     timezone = pytz.timezone("Etc/UTC")
-    # criamos o objeto datetime no fuso horário UTC para que não seja aplicado o deslocamento do fuso horário local
-    utc_from = datetime(2021, 12, 8, tzinfo=timezone)
-    # recebemos 10 barras de EURUSD H4 a partir de 01/10/2019 no fuso horário UTC
+    utc_from = datetime(2021, 12, 9, tzinfo=timezone)
     rates = mt5.copy_rates_from(item, mt5.TIMEFRAME_M5, utc_from, 113)
-    # a partir dos dados recebidos criamos o DataFrame
     rates_frame = pd.DataFrame(rates)
-    # convertemos o tempo em segundos no formato datetime
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','close','spread']]
     #resumo
 
+    # SETUP 30.3
+    TrintaMME = resumo['close'].ewm(span=30).mean() 
+    TresMME = resumo['open'].ewm(span=3).mean()
 
-
-    # SETUP 9.1
-    NoveMME = resumo['close'].ewm(span=9).mean() 
-    TresMME = resumo['close'].ewm(span=3).mean()
-
-    resumo.insert(loc=4,column='MME 9',value=NoveMME)
+    resumo.insert(loc=4,column='MME 30',value=TrintaMME)
     resumo.insert(loc=5,column='MME 3',value=TresMME)
 
 
@@ -180,18 +174,16 @@ def eur():
     #teste = resumo[['MACD','signal','histog']]
     #display(teste.tail(60))
 
-
-
     # MONITORAMENTO
     resumo['flag'] = ''
     resumo['sinal'] = ''
 
     for i in range (1, len(resumo)):
-        if resumo['MME 9'][i] < resumo['MME 3'][i]:
+        if resumo['MME 30'][i] < resumo['MME 3'][i]:
             resumo['flag'][i] = 'COMPRA'
         else:
             resumo['flag'][i] = 'VENDA'
-            
+
     for x in range(1,len(resumo)):
         if resumo['flag'][x] == resumo['flag'][x-1]:
             resumo['sinal'][x] = ''
@@ -202,13 +194,13 @@ def eur():
 
 
     # RELATÓRIO DAS POSIÇÕES
-    info_posicoes = mt5.positions_get(symbol = "EURUSD")
+    info_posicoes = mt5.positions_get(symbol = "WDOF22")
     if info_posicoes:
         #print(info_posicoes)
         df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
-        print(df)
-        ticket = df['ticket'].iloc[-1]
-        natureza = df['type'].iloc[-1]
+        #display(df)
+        ticket = df['ticket'].iloc[0]
+        natureza = df['type'].iloc[0]
 
     flag = resumo['flag'].iloc[-1]
 
@@ -225,7 +217,7 @@ def eur():
         #bot.sendMessage(-351556985, f'ATENÇÃO! MUDANÇA DE STATUS: >> {item} - {flag} <<')
         print('Dados encontrados e enviados via Telegram'.upper())
 
-
+       
     # EXECUÇÃO EM CADA VARREDURA
     if resumo['flag'].iloc[-1] == 'COMPRA':
         if info_posicoes:
@@ -235,24 +227,18 @@ def eur():
                 print('Fechando VENDA')
                 close_venda()
                 time.sleep(1)
-                if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
-                    print('Abrindo uma COMPRA')
-                    compra()
-                    time.sleep(3)
-            else:
-                if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
-                    print('COMPRA EM ANDAMENTO')
-                else:
-                    close_compra()
-                    print('COMPRA FECHADA - MERCADO LATERAL')
-        else:
-            if (resumo['close'].iloc[-2] >= resumo['close'].iloc[-3] >= resumo['close'].iloc[-4]) & (resumo['close'].iloc[-1] > resumo['signal'].iloc[-1]):
+                print('Abrindo uma COMPRA')
                 compra()
-                print('COMPRA ABERTA - LTA')
+                print('Venda Fechada, COMPRA ABERTA')
+                time.sleep(3)
             else:
-                print('PAUSA - MERCADO LATERAL')
-     
-    
+                print('COMPRA EM ANDAMENTO')
+                        
+        else:
+            compra()
+            time.sleep(3)
+            print('COMPRA ABERTA')
+            
     else:
         if info_posicoes:
             if df['type'].iloc[0] == 0: #COMPRA
@@ -261,26 +247,20 @@ def eur():
                 print('Fechando COMPRA')
                 close_compra()
                 time.sleep(1)
-                if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
-                    print('Abrindo uma VENDA')
-                    venda()
-                    time.sleep(3)
-            else:
-                if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
-                    print('VENDA EM ANDAMENTO')
-                else:
-                    close_venda()
-                    print('VENDA FECHADA - MERCADO LATERAL')
-        else:
-            if (resumo['close'].iloc[-2] <= resumo['close'].iloc[-3] <= resumo['close'].iloc[-4]) | (resumo['close'].iloc[-1] < resumo['signal'].iloc[-1]):
                 venda()
-                print('VENDA ABERTA - LTB')
+                print('Compra Fechada, VENDA ABERTA')
+                time.sleep(3)
             else:
-                print('PAUSA - MERCADO LATERAL')
+                print('VENDA EM ANDAMENTO')
+        else:
+            venda()
+            time.sleep(3)
+            print('VENDA ABERTA')
+            
 
     time.sleep(5)
 
-
+    
     # AVISO DE SAÍDA DA OPERAÇÃO    
     compraHISTOG = resumo['histog'].iloc[-4] > 0 and resumo['histog'].iloc[-3] > 0 and resumo['histog'].iloc[-2] > 0
     compraSIGNAL = resumo['signal'].iloc[-4] > 0 and resumo['signal'].iloc[-3] > 0 and resumo['signal'].iloc[-2] > 0    
@@ -296,42 +276,40 @@ def eur():
     # FORCE
     #lucroVENDA = True
 
-
-
-    #if lucroCOMPRA == True:
-        #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-        #bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} <<')
-        #print('Dados encontrados e enviados via Telegram'.upper())
+    if lucroCOMPRA == True:
+        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} <<')
+        print('Dados encontrados e enviados via Telegram'.upper())
         #close_compra()
-        #time.sleep(5)
+        time.sleep(5)
 
-    #if lucroVENDA == True:
-        #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-        #bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} <<')
-        #print('Dados encontrados e enviados via Telegram'.upper())
+    if lucroVENDA == True:
+        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} <<')
+        print('Dados encontrados e enviados via Telegram'.upper())
         #close_venda()
-        #time.sleep(5)
-        
+        time.sleep(5)
+
      # SCALPING AUTOMÁTICO
     if info_posicoes:
-        if df['profit'].iloc[-1] >= 50.00:
+        if df['profit'].iloc[0] >= 50.00:
             profitLUC = df['profit'].iloc[0]
             if df['type'].iloc[0] == 0:
-                close_compra()
+                #close_compra()
                 time.sleep(5)
-                compra()   
-                
+                #compra()   
+
             else:
-                close_venda()
+                #close_venda()
                 time.sleep(5)
-                compra()
-                                
+                #compra()
+
             print(f'LUCRO OBTIDO E EFETIVADO DE: ${profitLUC}')
             # ENVIO DE MSG COM O LUCRO OBTIDO:
-            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-            bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO OBTIDO EM {item}: R$ {profitLUC}')
-                
-        if df['profit'].iloc[-1] <= -180.00:
+            #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            #bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO OBTIDO EM {item}: R$ {profitLUC}')
+
+        if df['profit'].iloc[0] <= -180.00:
             profitPER = df['profit'].iloc[0]
             if df['type'].iloc[0] == 0:
                 #close_compra()
@@ -341,12 +319,12 @@ def eur():
                 #close_venda()
                 time.sleep(5)
                 #compra()
-                
+
             print(f'PREJUÍZO FECHADO DE: ${profitPER}')
             # ENVIO DE MSG COM O PREJUÍZO OBTIDO:
-            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-            bot.sendMessage(-351556985, f'ATENÇÃO! PREJUÍZO OBTIDO EM {item}: R$ {profitPER}')
-        
+            #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            #bot.sendMessage(-351556985, f'ATENÇÃO! PREJUÍZO OBTIDO EM {item}: R$ {profitPER}')
+
     print(resumo.tail(5))
     time.sleep(2)
 
@@ -355,7 +333,6 @@ def eur():
     #time.sleep()
     print('\n\n')
 
-
 while True:
-   eur()
-   time.sleep(60)
+    wdo()
+    time.sleep(60)
