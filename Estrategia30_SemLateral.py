@@ -292,14 +292,14 @@ def WIN():
    if lucroCOMPRA == True:
        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
        bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} <<')
-       print('Dados encontrados e enviados via Telegram'.upper())
+       #print('Dados encontrados e enviados via Telegram'.upper())
        close_compra()
        time.sleep(5)
    
    if lucroVENDA == True:
        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
        bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} <<')
-       print('Dados encontrados e enviados via Telegram'.upper())
+       #print('Dados encontrados e enviados via Telegram'.upper())
        close_venda()
        time.sleep(5)
    
