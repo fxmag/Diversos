@@ -31,7 +31,7 @@ def gbpusd():
     def compra():
         symbol = ativo
         lot = 1.0
-        #point = mt5.symbol_info(symbol).point
+        point = mt5.symbol_info(symbol).point
         price = mt5.symbol_info_tick(symbol).ask
         desviation = 1
         requestCOMPRA = {    
@@ -40,6 +40,7 @@ def gbpusd():
             "volume": lot,
             "type": mt5.ORDER_TYPE_BUY,
             "price": price,
+            "tp": price + 50 * point,
             "magic": 234000,
             "desviation": desviation,
             "comment": "prython script open",
@@ -61,7 +62,7 @@ def gbpusd():
             "volume": lot,
             "type": mt5.ORDER_TYPE_SELL,
             "price": price,
-
+            "tp": price - 50 * point,
             "deviation": desviation,
             "magic": 234000,
             "comment": "python script close",
@@ -349,9 +350,13 @@ while y < 2:
     agoraRes = agora1[11:16]
        
     
-    if (balancoDia <= AlvoDia) & (agoraRes < '18:40'):
+    if (balancoDia <= AlvoDia) & ('04:00' < agoraRes < '18:00'):
         gbpusd()
-
+        
+        # ENVIO DE MSG DE INÍCIO DAS OPERAÇÕES:
+        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        bot.sendMessage(-351556985, f'INÍCIO DAS OPERAÇÕES DE HOJE PARA O **{symbol}**')
+        
         # 5 MINUTOS DE INTERVALO
         time.sleep(300)
         
