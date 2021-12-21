@@ -49,8 +49,8 @@ def WING22():
         closeSell = df['close'].iloc[-2]
         amplitudeCandle = df['high'].iloc[-2] - df['low'].iloc[-2]
 
-        precoVenda = closeSell - 1
-        precoLoss = df['high'].iloc[-1]
+        precoVenda = closeSell - 10
+        precoLoss = df['high'].iloc[-1] + 10
         precoGain = precoVenda - amplitudeCandle
 
         print(f'Banda Superior: {bandaSup}')
@@ -71,7 +71,8 @@ def WING22():
             "symbol": symbol,
             "volume": lot,
             "type": mt5.ORDER_TYPE_SELL,
-            "price": price,
+            #"price": price,
+            "price": precoVenda,
             "sl": precoLoss,
             "tp": precoGain,
             "deviation": desviation,
@@ -93,8 +94,8 @@ def WING22():
         closeBuy = df['close'].iloc[-2]
         amplitudeCandle = df['high'].iloc[-2] - df['low'].iloc[-2]
 
-        precoCompra = closeBuy + 1
-        precoLoss = df['low'].iloc[-1]
+        precoCompra = closeBuy + 10
+        precoLoss = df['low'].iloc[-1] - 10
         precoGain = precoCompra + amplitudeCandle
 
         print(f'Banda Inferior: {bandaInf}')
@@ -116,7 +117,8 @@ def WING22():
             "symbol": symbol,
             "volume": lot,
             "type": mt5.ORDER_TYPE_BUY,
-            "price": price,
+            #"price": price,
+            "price": precoCompra,
             "sl": precoLoss,
             "tp": precoGain,
             "magic": 234000,
