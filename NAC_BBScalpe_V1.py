@@ -10,7 +10,6 @@ pd.set_option('display.width', 1500)      # largura máxima da tabela
 pd.options.mode.chained_assignment = None  # default='warn'
 
 agora = datetime.now()
-print(f'Buscando dados...{agora}')
 
 #if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
 if not mt5.initialize(login=1092947504, server="ClearInvestimentos-CLEAR", password="Joh0516"):
@@ -134,6 +133,28 @@ def WING22():
     else:
         print('\nAGUARDANDO PRÓXIMO SINAL DE OPERAÇÃO')
 
-while True:
-    WING22()
-    time.sleep(120)
+y=0
+while y < 2:
+    symbol = "WING22"
+    agora = datetime.now()
+    print(f'Buscando dados...{agora}')
+      
+    AlvoDia = -3940.00 + 500.00
+    balancoDia = mt5.account_info().balance
+    AindaFalta = AlvoDia - balancoDia
+    
+    # HORARIO DAS OPERAÇÕES
+    agora = datetime.now()
+    agora1 = str(agora)
+    agoraRes = agora1[11:16]
+       
+    
+    if (balancoDia <= AlvoDia) & ('09:00' < agoraRes < '17:00'):
+        WING22()
+        
+        # 2 MINUTOS DE INTERVALO
+        time.sleep(120)
+        
+    else:
+        print('OPERAÇÕES ENCERRADAS POR HOJE')
+        time.sleep(120)
