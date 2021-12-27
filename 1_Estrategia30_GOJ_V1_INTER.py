@@ -77,7 +77,7 @@ def run():
         resultVENDA
 
     def close_compra():
-        info_posicoes = mt5.positions_get(symbol = symbol)
+        info_posicoes = mt5.positions_get(symbol = "EURUSD")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -111,7 +111,7 @@ def run():
         result
 
     def close_venda():
-        info_posicoes = mt5.positions_get(symbol = symbol)
+        info_posicoes = mt5.positions_get(symbol = "EURUSD")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -158,7 +158,7 @@ def run():
     
     # SETUP 42.3
     QDoisMME = resumo['close'].ewm(span=42).mean() 
-    TresMME = resumo['open'].ewm(span=3).mean()
+    TresMME = resumo['close'].ewm(span=3).mean()
 
     resumo.insert(loc=4,column='MME 42',value=QDoisMME)
     resumo.insert(loc=5,column='MME 3',value=TresMME)
@@ -252,7 +252,7 @@ def run():
     # LÓGICA DE EXECUCAO
     # MENSAGEM NA MUDANÇA DE CONDICAO
     if resumo['sinal'].iloc[-1] == 'sinal':
-        #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
         bot.sendMessage(-351556985, f'ATENÇÃO! MUDANÇA DE STATUS: >> {item} - {flag} <<')
         print('Dados encontrados e enviados via Telegram'.upper())
 
@@ -339,7 +339,7 @@ def run():
         else:
             resumo['lucroCOMPRA'][c] = ''  
 
-    display(resumo.tail(5))
+    print(resumo.tail(5))
     print('')
     
             
@@ -360,18 +360,19 @@ while y < 2:
     agoraRes = agora1[11:16]
        
     
-    if (balancoDia <= AlvoDia) & ('04:00' < agoraRes < '18:00'):
+    #if (balancoDia <= AlvoDia) & ('04:00' < agoraRes < '18:00'):
+    if balancoDia <= AlvoDia:
         run()
         print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
         print('Script executado com sucesso.\n\n'.upper())
         
         # 5 MINUTOS DE INTERVALO
-        time.sleep(5)
+        time.sleep(300)
         
     else:
         def encerramento():        
             # FECHANDO TODAS AS POSIÇÕES
-            symbol = symbol
+            symbol = "EURUSD"
             item = symbol
             ativo = symbol
 
@@ -382,7 +383,7 @@ while y < 2:
                 natureza = df['type'].iloc[0]
 
             def close_compra():
-                info_posicoes = mt5.positions_get(symbol = symbol)
+                info_posicoes = mt5.positions_get(symbol = "EURUSD")
                 if info_posicoes:
                     df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
                     ticket = df['ticket'].iloc[0]
@@ -414,7 +415,7 @@ while y < 2:
                 result
 
             def close_venda():
-                info_posicoes = mt5.positions_get(symbol = symbol)
+                info_posicoes = mt5.positions_get(symbol = "EURUSD")
                 if info_posicoes:
                     df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
                     ticket = df['ticket'].iloc[0]
