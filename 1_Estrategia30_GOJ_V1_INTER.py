@@ -6,7 +6,6 @@ import time
 import telepot
 import pytz
 
-bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
 
 # importamos o módulo pandas para exibir os dados recebidos na forma de uma tabela
 import pandas as pd
@@ -305,41 +304,39 @@ def run():
     resumo['lucroCOMPRA'] = ''
 
     # VENDA
-    for v in range(1, len(resumo)): 
-        if (resumo['signal'][v] < 0) & (resumo['histog'][v] > 0) & (resumo['flag'][v] == 'VENDA'):
-            resumo['lucroVENDA'][v] = 'LUCRO V'
-            if info_posicoes:
-                resultadoV = df['profit'].iloc[-1]
-                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-                bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} ${resultadoV}<<')
-                #print('Dados encontrados e enviados via Telegram'.upper())
-                close_venda()
-                print('ATENÇÃO! LUCRO MÁXIMO NA VENDA. SCALPING REALIZADO')
-                time.sleep(3)
-            #else:
-                #print('Erro. Reveja as posições'.upper())
-        else:
-            resumo['lucroVENDA'][v] = ''
+    if (resumo['signal'].iloc[-1] < 0) & (resumo['histog'].iloc[-1] > 0) & (resumo['flag'].iloc[-1] == 'VENDA'):
+        resumo['lucroVENDA'].iloc[-1] = 'LUCRO V'
+        if info_posicoes:
+            resultadoV = df['profit'].iloc[-1]
+            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} ${resultadoV}<<')
+            #print('Dados encontrados e enviados via Telegram'.upper())
+            close_venda()
+            print('ATENÇÃO! LUCRO MÁXIMO NA VENDA. SCALPING REALIZADO')
+            time.sleep(3)
+        #else:
+            #print('Erro. Reveja as posições'.upper())
+    else:
+        resumo['lucroVENDA'].iloc[-1] = ''
         
     # COMPRA
-    for c in range(1, len(resumo)): 
-        if (resumo['signal'][c] > 0) & (resumo['histog'][c] < 0) & (resumo['flag'][c] == 'COMPRA'):
-            resumo['lucroCOMPRA'][c] = 'LUCRO C'
-            if info_posicoes:
-                resultadoC = df['profit'].iloc[-1]
-                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-                bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} ${resultadoC}<<')
-                #print('Dados encontrados e enviados via Telegram'.upper())
-                close_compra()
-                print('ATENÇÃO! LUCRO MÁXIMO NA COMPRA. SCALPING REALIZADO')
-                time.sleep(3)
-            #else:
-                #print('Erro. Reveja as posições'.upper())
+    if (resumo['signal'].iloc[-1] > 0) & (resumo['histog'].iloc[-1] < 0) & (resumo['flag'].iloc[-1] == 'COMPRA'):
+        resumo['lucroCOMPRA'].iloc[-1] = 'LUCRO C'
+        if info_posicoes:
+            resultadoC = df['profit'].iloc[-1]
+            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} ${resultadoC}<<')
+            #print('Dados encontrados e enviados via Telegram'.upper())
+            close_compra()
+            print('ATENÇÃO! LUCRO MÁXIMO NA COMPRA. SCALPING REALIZADO')
+            time.sleep(3)
+        #else:
+            #print('Erro. Reveja as posições'.upper())
 
-        else:
-            resumo['lucroCOMPRA'][c] = ''  
+    else:
+        resumo['lucroCOMPRA'].iloc[-1] = ''  
 
-    print(resumo.tail(5))
+    display(resumo.tail(5))
     print('')
     
             

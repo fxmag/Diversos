@@ -6,7 +6,6 @@ import time
 import telepot
 import pytz
 
-bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
 
 # importamos o módulo pandas para exibir os dados recebidos na forma de uma tabela
 import pandas as pd
@@ -145,11 +144,11 @@ def run():
         result
 
     # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
-    timezone = pytz.timezone("Etc/UTC")
-    utc_from = datetime(2021, 12, 28, tzinfo=timezone)
-    rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
+    #timezone = pytz.timezone("Etc/UTC")
+    #utc_from = datetime(2021, 12, 28, tzinfo=timezone)
+    #rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
     #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 123) # PARA 9 HORAS DE MERCADO, 108 BARRAS
-    #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
+    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
     rates_frame = pd.DataFrame(rates)
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','high','low','close','tick_volume']]
@@ -224,7 +223,7 @@ def run():
         #print('Dados encontrados e enviados via Telegram'.upper())
 
     # EXECUÇÃO EM CADA VARREDURA
-    if resumo['flag'].iloc[-1] == 'COMPRA':
+    if resumo['flag'].iloc[-1] == 'COMPRA' and resumo['flag'].iloc[-2] == 'VENDA':
         if info_posicoes:
             if df['type'].iloc[0] == 1: # VENDA
                 print('Posição Atual: VENDA')
@@ -244,7 +243,7 @@ def run():
             time.sleep(3)
             print('COMPRA ABERTA')
 
-    else:
+    elif resumo['flag'].iloc[-1] == 'VENDA' and resumo['flag'].iloc[-2] == 'COMPRA':
         if info_posicoes: # VENDA
             if df['type'].iloc[0] == 0: #COMPRA
                 print('Posição Atual: COMPRA')
@@ -268,39 +267,37 @@ def run():
     resumo['lucroCOMPRA'] = ''
 
     # VENDA
-    for v in range(1, len(resumo)): 
-        if (resumo['signal'][v] < 0) & (resumo['histog'][v] > 0) & (resumo['flag'][v] == 'VENDA'):
-            resumo['lucroVENDA'][v] = 'LUCRO V'
-            if info_posicoes:
-                resultadoV = df['profit'].iloc[-1]
-                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-                bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} ${resultadoV}<<')
-                #print('Dados encontrados e enviados via Telegram'.upper())
-                close_venda()
-                print('ATENÇÃO! LUCRO MÁXIMO NA VENDA. SCALPING REALIZADO')
-                time.sleep(3)
-            #else:
-                #print('Erro. Reveja as posições'.upper())
-        else:
-            resumo['lucroVENDA'][v] = ''
+    if (resumo['signal'].iloc[-1] < 0) & (resumo['histog'].iloc[-1] > 0) & (resumo['flag'].iloc[-1] == 'VENDA'):
+        resumo['lucroVENDA'].iloc[-1] = 'LUCRO V'
+        if info_posicoes:
+            resultadoV = df['profit'].iloc[-1]
+            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA VENDA: >> {item} ${resultadoV}<<')
+            #print('Dados encontrados e enviados via Telegram'.upper())
+            close_venda()
+            print('ATENÇÃO! LUCRO MÁXIMO NA VENDA. SCALPING REALIZADO')
+            time.sleep(3)
+        #else:
+            #print('Erro. Reveja as posições'.upper())
+    else:
+        resumo['lucroVENDA'].iloc[-1] = ''
         
     # COMPRA
-    for c in range(1, len(resumo)): 
-        if (resumo['signal'][c] > 0) & (resumo['histog'][c] < 0) & (resumo['flag'][c] == 'COMPRA'):
-            resumo['lucroCOMPRA'][c] = 'LUCRO C'
-            if info_posicoes:
-                resultadoC = df['profit'].iloc[-1]
-                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-                bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} ${resultadoC}<<')
-                #print('Dados encontrados e enviados via Telegram'.upper())
-                close_compra()
-                print('ATENÇÃO! LUCRO MÁXIMO NA COMPRA. SCALPING REALIZADO')
-                time.sleep(3)
-            #else:
-                #print('Erro. Reveja as posições'.upper())
+    if (resumo['signal'].iloc[-1] > 0) & (resumo['histog'].iloc[-1] < 0) & (resumo['flag'].iloc[-1] == 'COMPRA'):
+        resumo['lucroCOMPRA'].iloc[-1] = 'LUCRO C'
+        if info_posicoes:
+            resultadoC = df['profit'].iloc[-1]
+            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            bot.sendMessage(-351556985, f'ATENÇÃO! LUCRO MÁXIMO NA COMPRA: >> {item} ${resultadoC}<<')
+            #print('Dados encontrados e enviados via Telegram'.upper())
+            close_compra()
+            print('ATENÇÃO! LUCRO MÁXIMO NA COMPRA. SCALPING REALIZADO')
+            time.sleep(3)
+        #else:
+            #print('Erro. Reveja as posições'.upper())
 
-        else:
-            resumo['lucroCOMPRA'][c] = ''  
+    else:
+        resumo['lucroCOMPRA'].iloc[-1] = ''  
 
     print(resumo.tail(5))
     print('')
@@ -323,8 +320,8 @@ while y < 2:
     agoraRes = agora1[11:16]
        
     
-    if (balancoDia <= AlvoDia) & ('04:00' < agoraRes < '18:00'):
-    #if balancoDia <= AlvoDia:
+    #if (balancoDia <= AlvoDia) & ('21:00' < agoraRes < '18:00'):
+    if balancoDia <= AlvoDia:
         run()
         print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
         print('Script executado com sucesso.\n\n'.upper())
@@ -438,4 +435,5 @@ while y < 2:
         # ENVIO DE MSG:
         bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
         bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
+        time.sleep(300)
         break
