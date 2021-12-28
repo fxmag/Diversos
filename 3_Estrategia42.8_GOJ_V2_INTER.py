@@ -223,7 +223,7 @@ def run():
         #print('Dados encontrados e enviados via Telegram'.upper())
 
     # EXECUÇÃO EM CADA VARREDURA
-    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['flag'].iloc[-2] == 'VENDA'):
+    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['flag'].iloc[-3] == 'VENDA'):
         if info_posicoes:
             if df['type'].iloc[0] == 1: # VENDA
                 print('Posição Atual: VENDA')
@@ -243,7 +243,7 @@ def run():
             time.sleep(3)
             print('COMPRA ABERTA')
 
-    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['flag'].iloc[-2] == 'COMPRA'):
+    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['flag'].iloc[-3] == 'COMPRA'):
         if info_posicoes: # VENDA
             if df['type'].iloc[0] == 0: #COMPRA
                 print('Posição Atual: COMPRA')
