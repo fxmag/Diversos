@@ -105,8 +105,8 @@ def run():
             amplitudeCandle = highBuy - lowBuy
 
             #precoCompra = closeBuy + 1
-            precoCompra = highBuy + 0.00001
-            precoLoss = lowBuy - 0.00001
+            precoCompra = highBuy + 1
+            precoLoss = lowBuy - 1
             precoGain = precoCompra + amplitudeCandle
 
             print(f'Amplitude Candle: {amplitudeCandle}')
@@ -174,8 +174,8 @@ def run():
             amplitudeCandle = highSell - lowSell
 
             #precoVenda = closeSell - 1
-            precoVenda = lowSell - 0.00001
-            precoLoss = highSell + 0.00001
+            precoVenda = lowSell - 1
+            precoLoss = highSell + 1
             precoGain = precoVenda - amplitudeCandle
 
             print(f'Amplitude Candle: {amplitudeCandle}')
