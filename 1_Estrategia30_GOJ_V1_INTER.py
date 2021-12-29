@@ -336,7 +336,7 @@ def run():
     else:
         resumo['lucroCOMPRA'].iloc[-1] = ''  
 
-    display(resumo.tail(5))
+    print(resumo.tail(5))
     print('')
     
             
