@@ -18,7 +18,7 @@ if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", passwo
     quit()
 
      
-symbol = "WDOF22"
+symbol = "WING22"
 item = symbol
 ativo = symbol 
 
@@ -80,8 +80,8 @@ def run():
     
     if resumo['sinal'].iloc[-1] == 'sinal':
         flag = resumo['flag'].iloc[-1]
-        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-        bot.sendMessage(-351556985, f' >> Estratégia ESTOC: {item} ({flag}) <<')
+        #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        #bot.sendMessage(-351556985, f' >> Estratégia ESTOC: {item} ({flag}) <<')
         print('Dados encontrados e enviados via Telegram'.upper())
     
     
@@ -116,7 +116,7 @@ def run():
             print(f'Stop: {precoLoss}')
             print(f'Gain: {precoGain} ')
 
-            symbol = "WDOF22"
+            symbol = "WING22"
             lot = 1.0
             #point = mt5.symbol_info(symbol).point
             price = mt5.symbol_info_tick(symbol).ask
@@ -138,7 +138,8 @@ def run():
             resultCOMPRA = mt5.order_send(requestCOMPRA)
             resultCOMPRA
             print('\nORDEM DE COMPRA ENVIADA COM SUCESSO')
-            
+
+
         # ENVIANDO ORDEM DE COMPRA COM GAIN E LOSS SETADOS
         if info_posicoes:
             if df['type'].iloc[0] == 1: # VENDA
@@ -162,7 +163,8 @@ def run():
             print('COMPRA ABERTA')
             bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
             bot.sendMessage(-351556985, f'COMPRA ABERTA: >> {item} <<')
-   
+
+
 
     #elif (resumo['flag'].iloc[-2] == 'VENDA') & (resumo['sinal'].iloc[-2] == 'sinal') & (resumo['EstocS %K'].iloc[-2] <= resumo['EstocS %D'].iloc[-2]) & (resumo['EstocS %K'].iloc[-2] <= 100.00) & (resumo['EstocS %K'].iloc[-2] >= 70.00):
     elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] <= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] <= 100.00) & (resumo['EstocS %K'].iloc[-1] >= 70.00):
@@ -185,7 +187,7 @@ def run():
             print(f'Stop: {precoLoss}')
             print(f'Gain: {precoGain}')
   
-            symbol = "WDOF22"
+            symbol = "WING22"
             lot = 1.0
             point = mt5.symbol_info(symbol).point
             price=mt5.symbol_info_tick(symbol).bid
@@ -229,12 +231,12 @@ def run():
             print('VENDA ABERTA')
             bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
             bot.sendMessage(-351556985, f'VENDA ABERTA: >> {item} <<')
-        
-        
-    print(resumo.tail())
     
-            
-            
+
+    print(resumo.tail())
+
+      
+'''          
 y=0
 while y < 2:
     symbol = symbol
@@ -367,3 +369,4 @@ while y < 2:
         bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
         bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
         break
+'''
