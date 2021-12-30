@@ -31,7 +31,7 @@ def run():
     #utc_from = datetime(2021, 12, 24, tzinfo=timezone)
     #rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
     #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 123) # PARA 9 HORAS DE MERCADO, 108 BARRAS
-    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
+    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M15, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
     rates_frame = pd.DataFrame(rates)
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','high','low','close','tick_volume']]
@@ -97,7 +97,7 @@ def run():
 
     # EXECUÇÃO EM CADA VARREDURA
     #if (resumo['flag'].iloc[-2] == 'COMPRA') & (resumo['sinal'].iloc[-2] == 'sinal') & (resumo['EstocS %K'].iloc[-2] >= resumo['EstocS %D'].iloc[-2]) & (resumo['EstocS %K'].iloc[-2] >= 0.00) & (resumo['EstocS %K'].iloc[-2] <= 30.00):
-    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] >= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] >= 0.00) & (resumo['EstocS %K'].iloc[-1] <= 30.00):
+    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] >= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] >= 0.00) & (resumo['EstocS %K'].iloc[-1] <= 25.00):
         
         def compra():
             # COMPRA: CALCULOS
@@ -166,7 +166,7 @@ def run():
    
 
     #elif (resumo['flag'].iloc[-2] == 'VENDA') & (resumo['sinal'].iloc[-2] == 'sinal') & (resumo['EstocS %K'].iloc[-2] <= resumo['EstocS %D'].iloc[-2]) & (resumo['EstocS %K'].iloc[-2] <= 100.00) & (resumo['EstocS %K'].iloc[-2] >= 70.00):
-    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] <= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] <= 100.00) & (resumo['EstocS %K'].iloc[-1] >= 70.00):
+    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] <= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] <= 100.00) & (resumo['EstocS %K'].iloc[-1] >= 75.00):
            
         def venda():
             # VENDA: CALCULOS
@@ -233,9 +233,16 @@ def run():
         
         
     print(resumo.tail())
+    print('')
     
-            
-            
+while True:
+    run()
+    time.sleep(900)
+
+
+
+
+'''
 y=0
 while y < 2:
     symbol = symbol
@@ -368,3 +375,4 @@ while y < 2:
         bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
         bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
         break
+'''

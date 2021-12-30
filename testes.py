@@ -12,13 +12,14 @@ pd.set_option('display.width', 1500)      # largura máxima da tabela
 pd.options.mode.chained_assignment = None  # default='warn'
 
 #if not mt5.initialize(login=1002947504, server="ClearInvestimentos-CLEAR", password="Joh0516"):
-if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
-#if not mt5.initialize(login=4999473749, server="MetaQuotes-Demo", password="elf4lnbx"):
+#if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
+if not mt5.initialize(login=4999473749, server="MetaQuotes-Demo", password="elf4lnbx"):
     print("initialize() failed, error code =",mt5.last_error())
     quit()
 
      
-symbol = "WING22"
+symbol = "EURUSD"
+#symbol = "WDOF22"
 item = symbol
 ativo = symbol 
 
@@ -79,8 +80,8 @@ resumo = resumo[['time','open','high','low','close','EstocS %K','EstocS %D','fla
 
 if resumo['sinal'].iloc[-1] == 'sinal':
     flag = resumo['flag'].iloc[-1]
-    #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-    #bot.sendMessage(-351556985, f' >> Estratégia ESTOC: {item} ({flag}) <<')
+    bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+    bot.sendMessage(-351556985, f' >> Estratégia ESTOC: {item} ({flag}) <<')
     print('Dados encontrados e enviados via Telegram'.upper())
 
 
@@ -95,44 +96,98 @@ if info_posicoes:
 
 # EXECUÇÃO EM CADA VARREDURA
 #if (resumo['flag'].iloc[-2] == 'COMPRA') & (resumo['sinal'].iloc[-2] == 'sinal') & (resumo['EstocS %K'].iloc[-2] >= resumo['EstocS %D'].iloc[-2]) & (resumo['EstocS %K'].iloc[-2] >= 0.00) & (resumo['EstocS %K'].iloc[-2] <= 30.00):
-#if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['sinal'].iloc[-1] == 'sinal') & (resumo['EstocS %K'].iloc[-1] >= resumo['EstocS %D'].iloc[-1]) & (resumo['EstocS %K'].iloc[-1] >= 0.00) & (resumo['EstocS %K'].iloc[-1] <= 30.00):
+
     
-            # COMPRA: CALCULOS
-highBuy = resumo['high'].iloc[-2]
-lowBuy = resumo['low'].iloc[-2]
-amplitudeCandle = highBuy - lowBuy
+def compra():
+    # COMPRA: CALCULOS
+    highBuy = resumo['high'].iloc[-2]
+    lowBuy = resumo['low'].iloc[-2]
+    amplitudeCandle = highBuy - lowBuy
 
-#precoCompra = closeBuy + 1
-precoCompra = highBuy
-precoLoss = lowBuy
-precoGain = precoCompra + amplitudeCandle
+    #precoCompra = closeBuy + 1
+    precoCompra = highBuy + 0.00001
+    precoLoss = lowBuy - 0.00001
+    precoGain = precoCompra + amplitudeCandle
 
-print(f'Amplitude Candle: {amplitudeCandle}')
-print(f'Máxima: {highBuy}')
-print(f'Mínima: {lowBuy}')
-print(f'Preço Compra: {precoCompra}')
-print(f'Stop: {precoLoss}')
-print(f'Gain: {precoGain} ')
+    print(f'Amplitude Candle: {amplitudeCandle}')
+    print(f'Máxima: {highBuy}')
+    print(f'Mínima: {lowBuy}')
+    print(f'Preço Compra: {precoCompra}')
+    print(f'Stop: {precoLoss}')
+    print(f'Gain: {precoGain} ')
 
-symbol = "WING22"
-lot = 1.0
-#point = mt5.symbol_info(symbol).point
-price = mt5.symbol_info_tick(symbol).ask
-desviation = 1
-requestCOMPRA = {    
-    "action": mt5.TRADE_ACTION_DEAL,
-    "symbol": symbol,
-    "volume": lot,
-    "type": mt5.ORDER_TYPE_BUY,
-    "price": price,
-    "sl": precoLoss,
-    "tp": precoGain,
-    "magic": 234000,
-    "desviation": desviation,
-    "comment": "prython script open",
-    "type_time":mt5.ORDER_TIME_GTC,
-    'type_filling':mt5.ORDER_FILLING_IOC,
-    }
-resultCOMPRA = mt5.order_send(requestCOMPRA)
-resultCOMPRA
-print('\nORDEM DE COMPRA ENVIADA COM SUCESSO')
+    symbol = "EURUSD"
+    lot = 1.0
+    #point = mt5.symbol_info(symbol).point
+    price = mt5.symbol_info_tick(symbol).ask
+    desviation = 1
+    requestCOMPRA = {    
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": lot,
+        "type": mt5.ORDER_TYPE_BUY,
+        "price": price,
+        "sl": precoLoss,
+        "tp": precoGain,
+        "magic": 234000,
+        "desviation": desviation,
+        "comment": "prython script open",
+        "type_time":mt5.ORDER_TIME_GTC,
+        'type_filling':mt5.ORDER_FILLING_IOC,
+        }
+    resultCOMPRA = mt5.order_send(requestCOMPRA)
+    resultCOMPRA
+    print('\nORDEM DE COMPRA ENVIADA COM SUCESSO')
+    
+
+
+
+#elif (resumo['flag'].iloc[-2] == 'VENDA') & (resumo['sinal'].iloc[-2] == 'sinal') & (resumo['EstocS %K'].iloc[-2] <= resumo['EstocS %D'].iloc[-2]) & (resumo['EstocS %K'].iloc[-2] <= 100.00) & (resumo['EstocS %K'].iloc[-2] >= 70.00):
+        
+def venda():
+    # VENDA: CALCULOS
+    highSell = resumo['high'].iloc[-2]
+    lowSell = resumo['low'].iloc[-2]
+    amplitudeCandle = highSell - lowSell
+
+    #precoVenda = closeSell - 1
+    precoVenda = lowSell - 0.00001
+    precoLoss = highSell + 0.00001
+    precoGain = precoVenda - amplitudeCandle
+
+    print(f'Amplitude Candle: {amplitudeCandle}')
+    print(f'Máxima: {highSell}')
+    print(f'Mínima: {lowSell}')
+    print(f'Preço Venda: {precoVenda}')
+    print(f'Stop: {precoLoss}')
+    print(f'Gain: {precoGain}')
+
+    symbol = "EURUSD"
+    lot = 1.0
+    point = mt5.symbol_info(symbol).point
+    price=mt5.symbol_info_tick(symbol).bid
+    desviation = 1
+    requestVENDA={
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": lot,
+        "type": mt5.ORDER_TYPE_SELL,
+        "price": price,
+        "sl": precoLoss,
+        "tp": precoGain,
+        "deviation": desviation,
+        "magic": 234000,
+        "comment": "python script close",
+        "type_time": mt5.ORDER_TIME_GTC,
+        "type_filling": mt5.ORDER_FILLING_IOC,
+        }    
+    resultVENDA = mt5.order_send(requestVENDA)
+    resultVENDA
+    print('\nORDEM DE VENDA ENVIADA COM SUCESSO')
+
+
+
+print(resumo.tail())
+
+venda()     
+ 

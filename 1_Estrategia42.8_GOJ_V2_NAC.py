@@ -19,10 +19,10 @@ if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", passwo
     print("initialize() failed, error code =",mt5.last_error())
     quit()
 
-symbol = "WDOF22"
+symbol = "WDOG22"
 
 def run():
-    symbol = "WDOF22"
+    symbol = "WDOG22"
     #symbol = "WDOF22"
     item = symbol
     ativo = symbol 
@@ -76,7 +76,7 @@ def run():
         resultVENDA
 
     def close_compra():
-        info_posicoes = mt5.positions_get(symbol = "WDOF22")
+        info_posicoes = mt5.positions_get(symbol = "WDOG22")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -110,7 +110,7 @@ def run():
         result
 
     def close_venda():
-        info_posicoes = mt5.positions_get(symbol = "WDOF22")
+        info_posicoes = mt5.positions_get(symbol = "WDOG22")
         if info_posicoes:
             #print(info_posicoes)
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
@@ -217,10 +217,10 @@ def run():
    # LÓGICA DE EXECUCAO
 
     # MENSAGEM NA MUDANÇA DE CONDICAO
-    #if resumo['sinal'].iloc[-1] == 'sinal':
-        #bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-        #bot.sendMessage(-351556985, f'ATENÇÃO! MUDANÇA DE STATUS: >> {item} - {flag} <<')
-        #print('Dados encontrados e enviados via Telegram'.upper())
+    if resumo['sinal'].iloc[-1] == 'sinal':
+        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+        bot.sendMessage(-351556985, f'ATENÇÃO! MUDANÇA DE STATUS: >> {item} - {flag} <<')
+        print('Dados encontrados e enviados via Telegram'.upper())
 
     # EXECUÇÃO EM CADA VARREDURA
     if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['flag'].iloc[-3] == 'VENDA'):
@@ -303,11 +303,19 @@ def run():
 
     print(resumo.tail(5))
     print('')
-    
-                 
+
+
+while True:
+    run()
+    time.sleep(300)
+
+
+
+
+'''                 
 y=0
 while y < 2:
-    symbol = "WDOF22"
+    symbol = "WDOG22"
     agora = datetime.now()
     print(f'Buscando dados...{agora}')
       
@@ -333,17 +341,17 @@ while y < 2:
     else:
         def encerramento():        
             # FECHANDO TODAS AS POSIÇÕES
-            symbol = "WDOF22"
+            symbol = "WDOG22"
             item = symbol
             ativo = symbol
 
-            info_posicoes = mt5.positions_get(symbol = "WDOF22")
+            info_posicoes = mt5.positions_get(symbol = "WDOG22")
             df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
             ticket = df['ticket'].iloc[0]
             natureza = df['type'].iloc[0]
 
             def close_compra():
-                info_posicoes = mt5.positions_get(symbol = "WDOF22")
+                info_posicoes = mt5.positions_get(symbol = "WDOG22")
                 if info_posicoes:
                     df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
                     ticket = df['ticket'].iloc[0]
@@ -375,7 +383,7 @@ while y < 2:
                 result
 
             def close_venda():
-                info_posicoes = mt5.positions_get(symbol = "WDOF22")
+                info_posicoes = mt5.positions_get(symbol = "WDOG22")
                 if info_posicoes:
                     df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
                     ticket = df['ticket'].iloc[0]
@@ -426,7 +434,7 @@ while y < 2:
                 
         x=0
         while x < 4:
-           info_posicoes = mt5.positions_get(symbol = "WDOF22")
+           info_posicoes = mt5.positions_get(symbol = "WDOG22")
            if info_posicoes:
               encerramento()
               time.sleep(15)
@@ -443,3 +451,4 @@ while y < 2:
         bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
         time.sleep(300)
         break
+'''
