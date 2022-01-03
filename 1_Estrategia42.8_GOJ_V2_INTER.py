@@ -148,7 +148,7 @@ def run():
     #utc_from = datetime(2021, 12, 28, tzinfo=timezone)
     #rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
     #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 123) # PARA 9 HORAS DE MERCADO, 108 BARRAS
-    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M15, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
+    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
     rates_frame = pd.DataFrame(rates)
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','high','low','close','tick_volume']]
@@ -304,7 +304,12 @@ def run():
     print(resumo.tail(5))
     print('')
     
-            
+while True:
+    run()
+    time.sleep(300)
+
+
+'''          
             
 y=0
 while y < 2:
@@ -439,3 +444,4 @@ while y < 2:
         bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
         time.sleep(300)
         break
+'''

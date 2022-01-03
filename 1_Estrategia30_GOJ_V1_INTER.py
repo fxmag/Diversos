@@ -157,10 +157,10 @@ def run():
     
     # SETUP 42.3
     QDoisMME = resumo['close'].ewm(span=42).mean() 
-    TresMME = resumo['close'].ewm(span=3).mean()
+    TresMME = resumo['close'].ewm(span=8).mean()
 
     resumo.insert(loc=4,column='MME 42',value=QDoisMME)
-    resumo.insert(loc=5,column='MME 3',value=TresMME)
+    resumo.insert(loc=5,column='MME 8',value=TresMME)
     
     #display(resumo.tail(60))
     #resumo = resumo.loc[resumo["time"].between('2021-12-22 14:00:00', '2021-12-23 18:20:00')]
