@@ -43,8 +43,8 @@ def run():
 
     #display(dfM1.head())
     #display(dfH1.head(1))
-    display(dfM1.tail()) # ESTUDOS
-    display(dfH1.tail(2)) # ESTUDOS
+    print(dfM1.tail()) # ESTUDOS
+    print(dfH1.tail(2)) # ESTUDOS
 
 
     openH1 = dfH1['open']
