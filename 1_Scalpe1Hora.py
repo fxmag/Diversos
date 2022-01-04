@@ -10,7 +10,7 @@ pd.set_option('display.width', 1500)      # largura máxima da tabela
 pd.options.mode.chained_assignment = None  # default='warn'
 
 agora = datetime.now()
-print(f'Buscando dados...{agora}')
+#print(f'Buscando dados...{agora}')
 
 #if not mt5.initialize(login=54679378, server="MetaQuotes-Demo", password="hz7ulfri"):
 if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
@@ -26,7 +26,7 @@ def run():
     
     # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
     timezone = pytz.timezone("Etc/UTC")
-    utc_from = datetime(2022, 1, 4, tzinfo=timezone)
+    utc_from = datetime(2022, 1, 5, tzinfo=timezone)
     ratesM1 = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M1, utc_from, 600)
     ratesH1 = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_H1, utc_from, 10)
     rates_frameM1 = pd.DataFrame(ratesM1)
@@ -36,14 +36,15 @@ def run():
     dfM1 = rates_frameM1[['time','open','high','low','close']]
     dfH1 = rates_frameH1[['time','open','high','low','close']]
 
-    #dfM1 = dfM1.loc[dfM1["time"].between('2022-1-3 10:01:00', '2022-1-3 11:00:00')]
-    #dfH1 = dfH1.loc[dfH1["time"].between('2022-1-3 09:00:00', '2022-1-3 09:05:00')]
-    dfM1 = dfM1.loc[dfM1["time"].between('2022-1-3 10:01:00', '2022-1-3 18:25:00')] # ESTUDOS
-    dfH1 = dfH1.loc[dfH1["time"].between('2022-1-3 09:00:00', '2022-1-3 16:00:00')] # ESTUDOS
+    dfM1 = dfM1.loc[dfM1["time"].between('2022-1-4 10:01:00', '2022-1-4 18:00:00')]
+    dfH1 = dfH1.loc[dfH1["time"].between('2022-1-4 09:00:00', '2022-1-4 09:05:00')]
+    #dfM1 = dfM1.loc[dfM1["time"].between('2022-1-3 10:01:00', '2022-1-3 18:25:00')] # ESTUDOS
+    #dfH1 = dfH1.loc[dfH1["time"].between('2022-1-3 09:00:00', '2022-1-3 16:00:00')] # ESTUDOS
 
     #display(dfM1.head())
     #display(dfH1.head(1))
     print(dfM1.tail()) # ESTUDOS
+    print('')
     print(dfH1.tail(2)) # ESTUDOS
 
 
@@ -68,9 +69,6 @@ def run():
     #SEGUNDA VELA
     closeVela2 = closeM1
 
-
-    
-    
     
     # RELATÓRIO DAS POSIÇÕES
     info_posicoes = mt5.positions_get(symbol = symbol)
@@ -80,11 +78,7 @@ def run():
         #display(df)
         ticket = df['ticket'].iloc[0]
         natureza = df['type'].iloc[0]
-        
-        
-        
-        
-        
+            
       
     #COMPRA 
     if info_posicoes:
@@ -126,7 +120,10 @@ def run():
                     }
                 resultCOMPRA = mt5.order_send(requestCOMPRA)
                 resultCOMPRA
-                print('\nORDEM DE COMPRA ENVIADA COM SUCESSO')  
+                print('\nORDEM DE COMPRA ENVIADA COM SUCESSO')
+                
+                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+                bot.sendMessage(-351556985, f'ESTRATÉGIA ROMPIMENTO: COMPRA PARA >> {symbol} <<') 
 
         # VENDA
         elif closeVela1 > closeVela2:
@@ -167,11 +164,38 @@ def run():
                 resultVENDA
                 print('\nORDEM DE VENDA ENVIADA COM SUCESSO')
 
+                bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+                bot.sendMessage(-351556985, f'ESTRATÉGIA ROMPIMENTO: VENDA PARA >> {symbol} <<')
+
         else:
             print('AGUARDANDO PRÓXIMO SINAL')
 
         
         
-while True:
-    run()
-    time.sleep(30)
+y=0
+while y < 2:
+    symbol = "WDOG22"
+    agora = datetime.now()
+    print(f'Buscando dados...{agora}')
+      
+    AlvoDia = -3900.00 + 500.00
+    balancoDia = mt5.account_info().balance
+    AindaFalta = AlvoDia - balancoDia
+    
+    # HORARIO DAS OPERAÇÕES
+    agora = datetime.now()
+    agora1 = str(agora)
+    agoraRes = agora1[11:16]
+       
+ 
+    #if (balancoDia <= AlvoDia) & ('09:00' < agoraRes < '17:30'):
+    if '09:55' < agoraRes < '17:30':
+        run()
+        #print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
+        print('Script executado com sucesso.\n\n'.upper())
+          
+        # 5 MINUTOS DE INTERVALO
+        time.sleep(60)
+    else:
+        print('AGUARDANDO ABERTURA DE MERCADO')
+        time.sleep(60)
