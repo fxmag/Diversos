@@ -125,9 +125,13 @@ def run():
                 bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
                 bot.sendMessage(-351556985, f'ESTRATÉGIA ROMPIMENTO: COMPRA PARA >> {symbol} <<') 
 
+                print('ENCERRANDO OPERAÇÕES POR HOJE')
+                time.sleep(36000)
+
         # VENDA
         elif closeVela1 > closeVela2:
             if closeVela2 <= lowVela1 - 3.0:
+                parar = True
                 print('VENDA')
                 precoVenda = closeVela2
                 precoGainVenda = precoVenda - pontos1
@@ -167,6 +171,9 @@ def run():
                 bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
                 bot.sendMessage(-351556985, f'ESTRATÉGIA ROMPIMENTO: VENDA PARA >> {symbol} <<')
 
+                print('ENCERRANDO OPERAÇÕES POR HOJE')
+                time.sleep(36000)
+
         else:
             print('AGUARDANDO PRÓXIMO SINAL')
 
@@ -189,7 +196,7 @@ while y < 2:
        
  
     #if (balancoDia <= AlvoDia) & ('09:00' < agoraRes < '17:30'):
-    if '09:55' < agoraRes < '17:30':
+    if ('09:55' < agoraRes < '17:30'):
         run()
         #print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
         print('Script executado com sucesso.\n\n'.upper())
