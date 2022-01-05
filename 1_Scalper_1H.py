@@ -16,17 +16,18 @@ agora = datetime.now()
 if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", password="Joh0516"):
     print("initialize() failed, error code =",mt5.last_error())
     quit()
-    
 
-
+diaHoje = 5
+diaAmanha = 6
+diaHoje = str(diaHoje)
 
 def run():
     
-    symbol = "WDOG22"
+    symbol = "WING22"
     
     # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
     timezone = pytz.timezone("Etc/UTC")
-    utc_from = datetime(2022, 1, 5, tzinfo=timezone)
+    utc_from = datetime(2022, 1, diaAmanha, tzinfo=timezone)
     ratesM1 = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M1, utc_from, 600)
     ratesH1 = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_H1, utc_from, 10)
     rates_frameM1 = pd.DataFrame(ratesM1)
@@ -36,16 +37,16 @@ def run():
     dfM1 = rates_frameM1[['time','open','high','low','close']]
     dfH1 = rates_frameH1[['time','open','high','low','close']]
 
-    dfM1 = dfM1.loc[dfM1["time"].between('2022-1-4 10:01:00', '2022-1-4 18:00:00')]
-    dfH1 = dfH1.loc[dfH1["time"].between('2022-1-4 09:00:00', '2022-1-4 09:05:00')]
-    #dfM1 = dfM1.loc[dfM1["time"].between('2022-1-3 10:01:00', '2022-1-3 18:25:00')] # ESTUDOS
-    #dfH1 = dfH1.loc[dfH1["time"].between('2022-1-3 09:00:00', '2022-1-3 16:00:00')] # ESTUDOS
+    #dfM1 = dfM1.loc[dfM1["time"].between('2022-1-4 10:01:00', '2022-1-4 18:00:00')]
+    #dfH1 = dfH1.loc[dfH1["time"].between('2022-1-4 09:00:00', '2022-1-4 09:05:00')]
+    dfM1 = dfM1.loc[dfM1["time"].between(f'2022-1-{diaHoje} 10:01:00', f'2022-1-{diaHoje} 18:20:00')] # ESTUDOS
+    dfH1 = dfH1.loc[dfH1["time"].between(f'2022-1-{diaHoje} 08:05:00', f'2022-1-{diaHoje} 09:05:00')] # ESTUDOS
 
     #display(dfM1.head())
     #display(dfH1.head(1))
     print(dfM1.tail()) # ESTUDOS
     print('')
-    print(dfH1.tail(2)) # ESTUDOS
+    print(dfH1.head()) # ESTUDOS
 
 
     openH1 = dfH1['open']
@@ -53,10 +54,11 @@ def run():
     lowH1 = dfH1['low']
     closeH1 = dfH1['close']
 
-    openM1 = dfM1['open'].iloc[-2]
-    highM1 = dfM1['open'].iloc[-2]
-    lowM1 = dfM1['open'].iloc[-2]
-    closeM1 = dfM1['open'].iloc[-2]
+    openM1 = dfM1['open'].iloc[-1]
+    highM1 = dfM1['open'].iloc[-1]
+    lowM1 = dfM1['open'].iloc[-1]
+    closeM1 = dfM1['open'].iloc[-1]
+    print(closeM1)
 
 
     #PRIMEIRA VELA
@@ -181,7 +183,7 @@ def run():
         
 y=0
 while y < 2:
-    symbol = "WDOG22"
+    symbol = "WING22"
     agora = datetime.now()
     print(f'Buscando dados...{agora}')
       
@@ -196,7 +198,7 @@ while y < 2:
        
  
     #if (balancoDia <= AlvoDia) & ('09:00' < agoraRes < '17:30'):
-    if ('09:55' < agoraRes < '17:30'):
+    if ('10:00' < agoraRes < '17:30'):
         run()
         #print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
         print('Script executado com sucesso.\n\n'.upper())
