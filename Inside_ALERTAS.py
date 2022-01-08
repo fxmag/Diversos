@@ -17,48 +17,51 @@ if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", passwo
     print("initialize() failed, error code =",mt5.last_error())
     quit()
 
-diaHoje = 5
-diaAmanha = 6
-diaHoje = str(diaHoje)
+def run():
+    diaHoje = 5
+    diaAmanha = 6
+    diaHoje = str(diaHoje)
 
-symbols = ['WDOG22','WING22']
+    symbols = ['WDOG22','WING22']
 
-for symbol in symbols:
-    print(symbol)
-    # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
-    #timezone = pytz.timezone("Etc/UTC")
-    #utc_from = datetime(2022, 1, diaAmanha, tzinfo=timezone)
-    ratesM15 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M15, 0, 40)
-    rates_frameM15 = pd.DataFrame(ratesM15)
-    rates_frameM15['time']=pd.to_datetime(rates_frameM15['time'], unit='s')
-    dfM15 = rates_frameM15[['time','open','high','low','close']]
-    #dfM15 = dfM15.tail()
+    for symbol in symbols:
+        print(symbol)
+        # CRIAÇÃO DOS CÁLCULOS (MÉDIAS)
+        #timezone = pytz.timezone("Etc/UTC")
+        #utc_from = datetime(2022, 1, diaAmanha, tzinfo=timezone)
+        ratesM15 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M15, 0, 40)
+        rates_frameM15 = pd.DataFrame(ratesM15)
+        rates_frameM15['time']=pd.to_datetime(rates_frameM15['time'], unit='s')
+        dfM15 = rates_frameM15[['time','open','high','low','close']]
+        #dfM15 = dfM15.tail()
 
-    #dfM15 = dfM1.loc[dfM1["time"].between('2022-1-4 10:01:00', '2022-1-4 18:00:00')]
-    #dfM15.tail()
+        #dfM15 = dfM1.loc[dfM1["time"].between('2022-1-4 10:01:00', '2022-1-4 18:00:00')]
+        #dfM15.tail()
 
-    dfM15['INSIDE'] = ''
-
-    if (dfM15['high'][i-3] > dfM15['high'][i-2]) & (dfM15['low'][i-3] < dfM15['low'][i-2]):
-        tempo = dfM15['time'][i-1]
-        dfM15['INSIDE'][i-1] = 'INSIDE'
-        if dfM15['INSIDE'][i] == 'INSIDE':
+        dfM15['INSIDE'] = ''
+        #X = 1 # FORCE
+        #if X == 1: # FORCE
+        
+        if (dfM15['high'].iloc[-3] > dfM15['high'].iloc[-2]) & (dfM15['low'].iloc[-3] < dfM15['low'].iloc[-2]):
+            tempo = dfM15['time'].iloc[-1]
+            dfM15['INSIDE'].iloc[-1] = 'INSIDE'
             # ENVIAR MENSAGEM TELEGRAM
             bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
             bot.sendMessage(-766185524, f'>> INSIDE BAR NO {symbol}! TIMEFRAME: 15M ({tempo}) <<')
-        #else:
-            #print('nada a enviar')
+            #else:
+                #print('nada a enviar')
 
-    else:
-        dfM15['INSIDE'][i] = ''
+        else:
+            dfM15['INSIDE'].iloc[-1] = ''
 
-    print(dfM15.tail(5))
-    
-print('Fim do processo')
-
-
+        print(dfM15.tail(5))
+        
+    print('Fim do processo')
 
 
+while True:
+    run()
+    time.sleep(900)
 
 '''
 # ESTUDOS: 
