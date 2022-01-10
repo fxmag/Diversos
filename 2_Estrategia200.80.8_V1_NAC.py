@@ -146,22 +146,26 @@ def run():
     #utc_from = datetime(2021, 12, 28, tzinfo=timezone)
     #rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
     #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 123) # PARA 9 HORAS DE MERCADO, 108 BARRAS
-    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 210) # PARA 9 HORAS DE MERCADO, 108 BARRAS
+    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M10, 0, 400) # PARA 9 HORAS DE MERCADO, 108 BARRAS
     rates_frame = pd.DataFrame(rates)
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','high','low','close','tick_volume']]
     #resumo.tail()  
    
     
-    # SETUP 42.8
-    QDoisMME = resumo['close'].ewm(span=42).mean() 
+    # SETUP 200.80.21.8
+    DuzentosMME = resumo['close'].ewm(span=200).mean() 
+    OitentaMME = resumo['close'].ewm(span=80).mean()
+    VinteMME = resumo['close'].ewm(span=21).mean()
     OitoMME = resumo['close'].ewm(span=8).mean()
 
-    resumo.insert(loc=4,column='MME 42',value=QDoisMME)
-    resumo.insert(loc=5,column='MME 8',value=OitoMME)
+    resumo.insert(loc=4,column='MME 200',value=DuzentosMME)
+    resumo.insert(loc=5,column='MME 80',value=OitentaMME)
+    resumo.insert(loc=6,column='MME 21',value=VinteMME)
+    resumo.insert(loc=7,column='MME 8',value=OitoMME)
     
     #display(resumo.tail(60))
-    #resumo = resumo.loc[resumo["time"].between('2021-12-22 14:00:00', '2021-12-23 18:20:00')]
+    #resumo = resumo.loc[resumo["time"].between('2022-01-07 09:00:00', '2022-01-07 18:20:00')]
     #display(resumo.tail())
     
     
@@ -184,10 +188,13 @@ def run():
     #for i in range (100, len(resumo)): # ESTUDOS
     for i in range (1, len(resumo)): # TRADE
 
-        if resumo['MME 42'][i] < resumo['MME 8'][i]:
+        if (resumo['MME 80'][i] < resumo['MME 8'][i]) & (resumo['MME 200'][i] < resumo['MME 8'][i]):
             resumo['flag'][i] = 'COMPRA'
-        else:
+            
+        elif (resumo['MME 80'][i] > resumo['MME 8'][i]) & (resumo['MME 200'][i] > resumo['MME 8'][i]):
             resumo['flag'][i] = 'VENDA'
+        else:
+             resumo['flag'][i] = 'Entre Médias'
         
     for x in range(1,len(resumo)):
         if resumo['flag'][x] == resumo['flag'][x-1]:
@@ -218,10 +225,13 @@ def run():
     if resumo['sinal'].iloc[-1] == 'sinal':
         bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
         bot.sendMessage(-351556985, f'ATENÇÃO! MUDANÇA DE STATUS: >> {item} - {flag} <<')
+        if resumo['flag'].iloc[-1] == 'Entre Médias':
+            bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
+            bot.sendMessage(-351556985, f'ATENÇÃO! SINAL ENTRE MÉDIAS. AGUARDANDO... ({item}) <<') 
         print('Dados encontrados e enviados via Telegram'.upper())
 
     # EXECUÇÃO EM CADA VARREDURA
-    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['flag'].iloc[-3] == 'VENDA'):
+    if (resumo['flag'].iloc[-1] == 'COMPRA') & (resumo['flag'].iloc[-3] != 'COMPRA'):
         if info_posicoes:
             if df['type'].iloc[0] == 1: # VENDA
                 print('Posição Atual: VENDA')
@@ -241,7 +251,7 @@ def run():
             time.sleep(3)
             print('COMPRA ABERTA')
 
-    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['flag'].iloc[-3] == 'COMPRA'):
+    elif (resumo['flag'].iloc[-1] == 'VENDA') & (resumo['flag'].iloc[-3] != 'VENDA'):
         if info_posicoes: # VENDA
             if df['type'].iloc[0] == 0: #COMPRA
                 print('Posição Atual: COMPRA')
@@ -305,148 +315,4 @@ def run():
 
 while True:
     run()
-    time.sleep(300)
-
-
-
-
-'''                 
-y=0
-while y < 2:
-    symbol = "WDOG22"
-    agora = datetime.now()
-    print(f'Buscando dados...{agora}')
-      
-    AlvoDia = -3900.00 + 500.00
-    balancoDia = mt5.account_info().balance
-    AindaFalta = AlvoDia - balancoDia
-    
-    # HORARIO DAS OPERAÇÕES
-    agora = datetime.now()
-    agora1 = str(agora)
-    agoraRes = agora1[11:16]
-       
-    
-    
-    if (balancoDia <= AlvoDia) & ('09:00' < agoraRes < '17:30'):
-        run()
-        print(f'FALTAM ${AindaFalta} PARA ATINGIR ALVO DO DIA \n')
-        print('Script executado com sucesso.\n\n'.upper())
-          
-        # 5 MINUTOS DE INTERVALO
-        time.sleep(300)
-        
-    else:
-        def encerramento():        
-            # FECHANDO TODAS AS POSIÇÕES
-            symbol = "WDOG22"
-            item = symbol
-            ativo = symbol
-
-            info_posicoes = mt5.positions_get(symbol = "WDOG22")
-            df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
-            ticket = df['ticket'].iloc[0]
-            natureza = df['type'].iloc[0]
-
-            def close_compra():
-                info_posicoes = mt5.positions_get(symbol = "WDOG22")
-                if info_posicoes:
-                    df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
-                    ticket = df['ticket'].iloc[0]
-                    natureza = df['type'].iloc[0]
-
-                # FECHAMENTO de uma COMPRA
-                symbol = ativo
-                ticket = int(ticket)
-                position_id=ticket
-                lot = 1.0
-                #point = mt5.symbol_info(symbol).point
-                price=mt5.symbol_info_tick(symbol).bid
-                desviation = 1
-
-                request2={
-                    "action": mt5.TRADE_ACTION_DEAL,
-                    "symbol": symbol,
-                    "volume": lot,
-                    "type": mt5.ORDER_TYPE_SELL,
-                    "position": position_id,
-                    "price": price,
-                    "deviation": desviation,
-                    "magic": 234000,
-                    "comment": "python script close",
-                    "type_time": mt5.ORDER_TIME_GTC,
-                    "type_filling": mt5.ORDER_FILLING_IOC,
-                    }    
-                result = mt5.order_send(request2)
-                result
-
-            def close_venda():
-                info_posicoes = mt5.positions_get(symbol = "WDOG22")
-                if info_posicoes:
-                    df = pd.DataFrame(list(info_posicoes), columns=info_posicoes[0]._asdict().keys())
-                    ticket = df['ticket'].iloc[0]
-                    natureza = df['type'].iloc[0]
-
-                # FECHAMENTO de uma VENDA
-                symbol = ativo
-                ticket = int(ticket)
-                position_id=ticket
-                lot = 1.0
-                #point = mt5.symbol_info(symbol).point
-                price=mt5.symbol_info_tick(symbol).ask
-                desviation = 1
-
-                request2={
-                    "action": mt5.TRADE_ACTION_DEAL,
-                    "symbol": symbol,
-                    "volume": lot,
-                    "type": mt5.ORDER_TYPE_BUY,
-                    "position": position_id,
-                    "price": price,
-                    "deviation": desviation,
-                    "magic": 234000,
-                    "comment": "python script close",
-                    "type_time": mt5.ORDER_TIME_GTC,
-                    "type_filling": mt5.ORDER_FILLING_IOC,
-                    }    
-                result = mt5.order_send(request2)
-                result
-
-                       
-            
-            if info_posicoes:
-                if df['type'].iloc[0] == 0: # COMPRA
-                    print('ENCONTRADA UMA COMPRA EM ANDAMENTO. FECHANDO')
-                    close_compra()
-                    time.sleep(3)
-                    print('COMPRA FECHADA COM SUCESSO')
-                    print(f'TODAS AS OPERAÇÕES DE HOJE FORAM ENCERRADAS COM SUCESSO - HORA ATUAL: {agora}')
-                else:
-                    print('ENCONTRADA UMA VENDA EM ANDAMENTO. FECHANDO')
-                    close_venda()
-                    time.sleep(3)
-                    print('VENDA FECHADA COM SUCESSO')
-                    print(f'TODAS AS OPERAÇÕES DE HOJE FORAM ENCERRADAS COM SUCESSO - HORA ATUAL: {agora}')
-            else:
-                print(f'TODAS AS OPERAÇÕES DE HOJE FORAM ENCERRADAS COM SUCESSO - HORA ATUAL: {agora}')
-                
-        x=0
-        while x < 4:
-           info_posicoes = mt5.positions_get(symbol = "WDOG22")
-           if info_posicoes:
-              encerramento()
-              time.sleep(15)
-              print('\n *** GARANTINDO QUE TODAS AS OPERAÇÕES FORAM ENCERRADAS...POR FAVOR, AGUARDE! ***')
-              x=x+1
-           else:
-              print('NÃO HÁ POSIÇÕES A SEREM FECHADAS!')
-              time.sleep(1)
-              x=x+1
-         
-        print(f'TUDO FINALIZADO. ATÉ AMANHÃ!')
-        # ENVIO DE MSG:
-        bot = telepot.Bot('1852343442:AAEBBS1NjjFRIqt-XTbb3rzRxipvk8ZqI5I')
-        bot.sendMessage(-351556985, f'TODAS AS OPERAÇÕES DE HOJE PARA O ** {symbol} ** FORAM ENCERRADAS! ATÉ MAIS!')
-        time.sleep(300)
-        break
-'''
+    time.sleep(600)

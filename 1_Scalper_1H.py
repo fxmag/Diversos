@@ -18,7 +18,7 @@ if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", passwo
     quit()
 
 diaHoje = 5
-diaAmanha = 6
+diaAmanha = diaHoje + 1
 diaHoje = str(diaHoje)
 
 def run():
