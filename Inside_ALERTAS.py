@@ -18,11 +18,12 @@ if not mt5.initialize(login=1092947504, server="ClearInvestimentos-DEMO", passwo
     quit()
 
 def run():
-    diaHoje = 5
-    diaAmanha = 6
+    diaHoje = 11
+    diaAmanha = diaHoje + 1
     diaHoje = str(diaHoje)
 
     symbols = ['WDOG22','WING22']
+    #symbols = ['EURUSD','USDJPY']
 
     for symbol in symbols:
         print(symbol)
