@@ -146,7 +146,7 @@ def run():
     #utc_from = datetime(2021, 12, 28, tzinfo=timezone)
     #rates = mt5.copy_rates_from(symbol, mt5.TIMEFRAME_M5, utc_from, 289)
     #rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 123) # PARA 9 HORAS DE MERCADO, 108 BARRAS
-    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M10, 0, 60) # PARA 9 HORAS DE MERCADO, 108 BARRAS
+    rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M10, 0, 150) # PARA 9 HORAS DE MERCADO, 108 BARRAS
     rates_frame = pd.DataFrame(rates)
     rates_frame['time']=pd.to_datetime(rates_frame['time'], unit='s')
     resumo = rates_frame[['time','open','high','low','close','tick_volume']]
